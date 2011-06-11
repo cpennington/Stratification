@@ -11,6 +11,7 @@ import System.IO
 import System.FilePath.Posix
 import System.Directory
 import System.Directory.Tree
+import System.Posix.Files
 
 translateJson :: String -> Either String String
 translateJson input = case parseJsonFromString input of
@@ -19,15 +20,22 @@ translateJson input = case parseJsonFromString input of
         Left msg -> Left $ "Unable to create dependency tree from json: "++msg
         Right deps -> Right $ renderHtml $ page $ stratify deps
 
-data Main = Main { output :: String, args :: [String], input :: String, template :: String }
-     deriving (Typeable, Data, Eq)
+data Main = Main {
+    output :: String,
+    args :: [String],
+    input :: String,
+    template :: String,
+    develop :: Bool
+    }
+    deriving (Typeable, Data, Eq)
 
 instance Attributes Main where
     attributes _ = group "Options:" [
         output   %> [ Help "Directory to put the output. Will be created if it doesn't exist", ArgHelp "PATH", Default "output" ],
         template %> [ Help "Template directory containing static files", ArgHelp "PATH", Default "static" ],
         args     %> [ Extra True ],
-        input    %> [ Positional 0, Default "-"]]
+        input    %> [ Positional 0, Default "-" ],
+        develop  %> [ Help "Link static directory, rather than copying" ]]
 
 instance RecordCommand Main where
      mode_summary _ = "Generate a webpage of stratified dependencies from an input file"
@@ -44,6 +52,11 @@ copyStaticContent template output = do
     copyStaticDir template output "js"
     copyStaticDir template output "css"
 
+linkStaticContent :: FilePath -> FilePath -> IO ()
+linkStaticContent template output = do
+    removeDirectoryRecursive output
+    createLink template output
+
 main = getArgs >>= executeR Main {} >>= \opts -> do
     inputData <- if input opts == "-"
         then getContents
@@ -56,4 +69,5 @@ main = getArgs >>= executeR Main {} >>= \opts -> do
 
     createDirectoryIfMissing True $ output opts
     writeFile outputPage page
-    copyStaticContent (template opts) (joinPath [output opts, "static"])
+    let distributeContent = if develop opts then linkStaticContent else copyStaticContent
+    distributeContent (template opts) (joinPath [output opts, "static"])
