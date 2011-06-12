@@ -1,0 +1,20 @@
+Name:                stratify
+Version:             0.0
+Description:         
+Author:              Calen Pennington
+Maintainer:          calen.pennington@gmail.com
+Build-Type:          Simple
+Cabal-Version:       >=1.6
+Executable stratify
+  Main-is:           Stratify.hs
+  Build-Depends:     base >= 3 && < 5,
+                     containers == 0.4.*,
+                     unix == 2.4.*,
+                     directory-tree == 0.10.*,
+                     directory == 1.1.*,
+                     filepath == 1.2.*,
+                     cmdlib == 0.3.*,
+                     aeson == 0.3.*,
+                     blaze-html == 0.4.*,
+                     bytestring == 0.9.*,
+                     attoparsec == 0.9.*

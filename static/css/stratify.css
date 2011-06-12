@@ -3,18 +3,28 @@ body {
 }
 
 .layer {
-    margin-top: .7em;
+    font-size: 50%;
 }
+
+/*.layer:hover .group {
+    width: .7em;
+    height: .7em;
+    margin: 2px;
+}*/
 
 .group {
     white-space: nowrap;
     display: inline-block;
-    height: 1em;
-    width: 1em;
+    height: .4em;
+    width: .4em;
     background: #999;
-    margin: 5px;
-    padding: 2px 5px 2px 5px;
+    padding: 2px;
     border-radius: 5px;
+    margin: 1px;
+}
+
+.group:hover {
+    background: #777;
 }
 
 .group .container {
@@ -22,8 +32,13 @@ body {
 }
 
 .group:hover .container {
-    background: #999;
+    background: #777;
     position: relative;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 1px;
+    left: 20px;
+    top: 20px;
 }
 
 .group:hover .item {
@@ -34,4 +49,5 @@ body {
     white-space: nowrap;
     display: inline-block;
     min-height: 12px;
+    font-size: 200%
 }

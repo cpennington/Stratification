@@ -1,9 +1,10 @@
 {-# LANGUAGE FlexibleInstances, MultiParamTypeClasses, DeriveDataTypeable #-}
-module Stratify where
+module Main where
 
 import Stratify.Internal
 import Stratify.Html
 import Stratify.Json
+import Stratify.Types
 import Text.Blaze.Renderer.String
 import Data.Aeson
 import System.Console.CmdLib
@@ -12,13 +13,18 @@ import System.FilePath.Posix
 import System.Directory
 import System.Directory.Tree
 import System.Posix.Files
+import Data.Map ((!))
 
-translateJson :: String -> Either String String
-translateJson input = case parseJsonFromString input of
+renderJsonAsHtml :: String -> Either String String
+renderJsonAsHtml input = case parseJsonFromString input of
     Left msg -> Left $ "Unable to parse json: "++msg
     Right value -> case parseDependenciesFromJson value of
         Left msg -> Left $ "Unable to create dependency tree from json: "++msg
-        Right deps -> Right $ renderHtml $ page $ stratify deps
+        Right deps -> let
+            ndeps = normalize deps
+            stratified = stratify ndeps
+            metrics = computeMetrics ndeps
+            in Right $ renderHtml $ page ((map . map) (metrics !) stratified)
 
 data Main = Main {
     output :: String,
@@ -54,14 +60,14 @@ copyStaticContent template output = do
 
 linkStaticContent :: FilePath -> FilePath -> IO ()
 linkStaticContent template output = do
-    removeDirectoryRecursive output
-    createLink template output
+    template' <- canonicalizePath template
+    createSymbolicLink template' output
 
 main = getArgs >>= executeR Main {} >>= \opts -> do
     inputData <- if input opts == "-"
         then getContents
         else readFile $ input opts
-    page <- case translateJson inputData of
+    page <- case renderJsonAsHtml inputData of
         Left msg -> error msg
         Right page -> return page
 

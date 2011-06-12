@@ -3,7 +3,7 @@ module Stratify.Internal where
 import Data.Map as M
 import Data.List as L
 import Stratify.Types
-import Data.Graph
+import Data.Ratio
 
 prependAt :: Ord k => v -> Map k [v] -> k -> Map k [v]
 prependAt value = flip.alter $ maybe (Just [value]) (Just.(value:))
@@ -28,25 +28,37 @@ satisfyLayer layer deps = foldl' satisfy' (deps, []) layer
         satisfy' (deps, nextLayer) dep = (deps', new ++ nextLayer)
             where (deps', new) = satisfy dep deps
 
-expandEmptyDeps :: Ord a => Dependencies a -> Dependencies a
-expandEmptyDeps deps = foldl' addMissing deps $ concat $ elems deps
-    where
-        addMissing deps key = insertWith (flip const) key [] deps
 
-collapseCycles :: Ord a => Dependencies a -> Dependencies (Cycle a)
-collapseCycles deps = fromList $ L.map groupAsDep $ groups
+percentileMap xs = fromList $ zip (L.map head gs) percentiles
     where
-        groupAsDep ds = (ds, minimalContainingComponents $ groupDependencies ds)
-        groupDependencies = concatMap ((flip.findWithDefault) [] deps)
-        minimalContainingComponents = nub . L.map ((flip.findWithDefault) [] containingComponent)
-        containingComponent = fromList [(x, c) | c <- groups, x <- c]
-        groups = L.map flattenSCC $ stronglyConnComp $ L.map nodeDep $ toList deps
-        nodeDep (dep, deps) = (dep, dep, deps)
+        gs = group $ sort xs
+        cumSums = scanl (+) 0 $ L.map length gs
+        percentiles = L.map (% (length xs)) cumSums
 
-stratify :: Ord a => Dependencies a -> [[Cycle a]]
+computeMetrics :: Ord a => NormalizedDependencies a -> MetricsMap (Cycle a)
+computeMetrics deps = M.mapWithKey metrics deps'
+    where
+        deps' = asDeps deps
+        revDeps = reverseDeps deps'
+        inlinkCounts = M.map length deps'
+        outlinkCounts = M.map length revDeps
+        inPercentiles = percentileMap $ elems inlinkCounts
+        outPercentiles = percentileMap $ elems outlinkCounts
+        metrics dep _ = let
+                outlinks = outlinkCounts ! dep
+                inlinks = inlinkCounts ! dep
+            in Metrics {
+              value = dep
+            , inlinks = inlinks
+            , outlinks = outlinks
+            , inlinksPercentile = toRational $ inPercentiles ! inlinks
+            , outlinksPercentile = toRational $ outPercentiles ! outlinks
+            }
+
+stratify :: Ord a => NormalizedDependencies a -> [[Cycle a]]
 stratify ds = unfoldr satisfyLayer' (ds', bottomLayer)
     where
-        ds' = collapseCycles $ expandEmptyDeps ds
+        ds' = asDeps ds
         bottomLayer = L.map fst $ L.filter (L.null . snd) $ toList ds'
         satisfyLayer' (deps, []) = if M.null deps
             then Nothing
