@@ -14,6 +14,7 @@ import System.Directory
 import System.Directory.Tree
 import System.Posix.Files
 import Data.Map ((!))
+import Debug.Trace
 
 renderJsonAsHtml :: String -> Either String String
 renderJsonAsHtml input = case parseJsonFromString input of
@@ -24,7 +25,7 @@ renderJsonAsHtml input = case parseJsonFromString input of
             ndeps = normalize deps
             stratified = stratify ndeps
             metrics = computeMetrics ndeps
-            in Right $ renderHtml $ page ((map . map) (metrics !) stratified)
+            in Right $ renderHtml $ page ((map . map) (findShow metrics) stratified)
 
 data Main = Main {
     output :: String,

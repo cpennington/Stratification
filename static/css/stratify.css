@@ -39,6 +39,7 @@ body {
     padding: 1px;
     left: 20px;
     top: 20px;
+    font-size: 200%
 }
 
 .group:hover .item {
@@ -49,5 +50,48 @@ body {
     white-space: nowrap;
     display: inline-block;
     min-height: 12px;
-    font-size: 200%
 }
+
+.colors .inlink-0,  .colors .outlink-0  { background: #0F0; }
+.colors .inlink-1,  .colors .outlink-1  { background: #1AFF00; }
+.colors .inlink-2,  .colors .outlink-2  { background: #3F0; }
+.colors .inlink-3,  .colors .outlink-3  { background: #4DFF00; }
+.colors .inlink-4,  .colors .outlink-4  { background: #6F0; }
+.colors .inlink-5,  .colors .outlink-5  { background: #80FF00; }
+.colors .inlink-6,  .colors .outlink-6  { background: #9F0; }
+.colors .inlink-7,  .colors .outlink-7  { background: #B3FF00; }
+.colors .inlink-8,  .colors .outlink-8  { background: #CF0; }
+.colors .inlink-9,  .colors .outlink-9  { background: #E6FF00; }
+.colors .inlink-10, .colors .outlink-10 { background: #FF0; }
+.colors .inlink-11, .colors .outlink-11 { background: #FFE600; }
+.colors .inlink-12, .colors .outlink-12 { background: #FC0; }
+.colors .inlink-13, .colors .outlink-13 { background: #FFB300; }
+.colors .inlink-14, .colors .outlink-14 { background: #F90; }
+.colors .inlink-15, .colors .outlink-15 { background: #FF8000; }
+.colors .inlink-16, .colors .outlink-16 { background: #F60; }
+.colors .inlink-17, .colors .outlink-17 { background: #FF4D00; }
+.colors .inlink-18, .colors .outlink-18 { background: #F30; }
+.colors .inlink-19, .colors .outlink-19 { background: #FF1A00; }
+.colors .inlink-20, .colors .outlink-20 { background: #FF0000; }
+
+.sizes .inlink-0,  .sizes .outlink-0  { height: .1em; width: .1em; }
+.sizes .inlink-1,  .sizes .outlink-1  { height: .2em; width: .2em; }
+.sizes .inlink-2,  .sizes .outlink-2  { height: .3em; width: .3em; }
+.sizes .inlink-3,  .sizes .outlink-3  { height: .4em; width: .4em; }
+.sizes .inlink-4,  .sizes .outlink-4  { height: .5em; width: .5em; }
+.sizes .inlink-5,  .sizes .outlink-5  { height: .6em; width: .6em; }
+.sizes .inlink-6,  .sizes .outlink-6  { height: .7em; width: .7em; }
+.sizes .inlink-7,  .sizes .outlink-7  { height: .8em; width: .8em; }
+.sizes .inlink-8,  .sizes .outlink-8  { height: .9em; width: .9em; }
+.sizes .inlink-9,  .sizes .outlink-9  { height: 1em; width: 1em; }
+.sizes .inlink-10, .sizes .outlink-10 { height: 1.1em; width: 1.1em; }
+.sizes .inlink-11, .sizes .outlink-11 { height: 1.2em; width: 1.2em; }
+.sizes .inlink-12, .sizes .outlink-12 { height: 1.3em; width: 1.3em; }
+.sizes .inlink-13, .sizes .outlink-13 { height: 1.4em; width: 1.4em; }
+.sizes .inlink-14, .sizes .outlink-14 { height: 1.5em; width: 1.5em; }
+.sizes .inlink-15, .sizes .outlink-15 { height: 1.6em; width: 1.6em; }
+.sizes .inlink-16, .sizes .outlink-16 { height: 1.7em; width: 1.7em; }
+.sizes .inlink-17, .sizes .outlink-17 { height: 1.8em; width: 1.8em; }
+.sizes .inlink-18, .sizes .outlink-18 { height: 1.9em; width: 1.9em; }
+.sizes .inlink-19, .sizes .outlink-19 { height: 2em; width: 2em; }
+.sizes .inlink-20, .sizes .outlink-20 { height: 2.1em; width: 2.1em; }

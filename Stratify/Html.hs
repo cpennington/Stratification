@@ -18,22 +18,29 @@ page layers = docTypeHtml $ do
         H.title "Stratification"
         link ! rel "stylesheet" ! href "static/css/stratify.css" ! type_ "text/css"
     body $ do
+        div ! class_ "colors-inlink"
         ul $ forM_ (reverse layers) ((li ! class_ "layer") . layer . sortLayer)
     where
-        sortLayer = L.sortBy (comparing outlinks)
+        sortLayer = L.sortBy (flip $ comparing (datum . outlinks))
 
 layer :: ToHtml a => [Metrics (Cycle a)] -> Html
 layer deps = forM_ deps group
 
+groups :: Double
 groups = 20
-inlinkGroup m = "inlink-" ++ (show ((inlinksPercentile m) * groups))
-outlinkGroup m = "inlink-" ++  (show ((outlinksPercentile m) * groups))
+groupNumber = floor . (* groups)
+
+inlinkGroup m = "inlink-" ++ (show $ groupNumber $ fractionOfMax $ logInlinks m)
+outlinkGroup m = "outlink-" ++  (show $ groupNumber $ percentile $ outlinks m)
 
 group :: ToHtml a => Metrics (Cycle a) -> Html
 group objects = H.span ! class_ (toValue $ L.intercalate " " ["group", inlinkGroup objects, outlinkGroup objects]) $ do
     H.span ! class_ "container" $ do
         forM_ (value objects) object
+        H.div $ toHtml $ "Dependees: " ++ (show $ floor $ datum $ inlinks objects)
+        H.div $ toHtml $ "Dependencies: " ++ (show $ floor $ datum $ outlinks objects)
+
 
 object :: ToHtml a => a -> Html
-object contents = H.span ! class_ "item" $ toHtml contents
+object contents = H.div ! class_ "item" $ toHtml contents
 
